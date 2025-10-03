@@ -11,7 +11,10 @@ jobs:
     working_directory: ~/project
     steps:
       - checkout
-      - android/prepare
+      # Aquí agrega los comandos necesarios para preparar el entorno, por ejemplo:
+      - run:
+          name: Install dependencies
+          command: ./gradlew androidDependencies
       - run:
           name: Build Debug APK
           command: ./gradlew assembleDebug
