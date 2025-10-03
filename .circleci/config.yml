@@ -1,14 +1,23 @@
-version: 2.1
+orbs:
+  android: circleci/android@2.1.1
 
 jobs:
-  job-hello:
-    docker:
-      - image: cimg/base:stable
+  build:
+    executor:
+      name: android/android
+      tag: "latest"
+    working_directory: ~/project
     steps:
+      - checkout
+      - android/prepare
       - run:
-          command: echo hola
+          name: Build Debug APK
+          command: ./gradlew assembleDebug
+      - store_artifacts:
+          path: app/build/outputs/apk/debug
+          destination: apk
 
 workflows:
-  wf-hello:
+  build_and_test:
     jobs:
-      - job-hello
+      - build
