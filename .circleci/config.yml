@@ -1,8 +1,5 @@
 version: 2.1
 
-orbs:
-  image-docker: cimg/base@stable
-
 jobs:
   job-hello:
     docker:
