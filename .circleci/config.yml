@@ -1,18 +1,17 @@
 version: 2.1
 
 orbs:
-  image-docker: cimg/base:stable
+  image-docker: cimg/base@stable
 
 jobs:
   job-hello:
     docker:
-      - image: image-docker
+      - image: cimg/base:stable
     steps:
       - run:
           command: echo hola
 
 workflows:
-  version: 2
   wf-hello:
     jobs:
       - job-hello
