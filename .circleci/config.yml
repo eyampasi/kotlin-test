@@ -1,26 +1,51 @@
 version: 2.1
 
 orbs:
-  android: circleci/android@2.1.1
+  android: circleci/android@2.4.0
 
 jobs:
   build:
-    executor:
-      name: android/android
-      tag: "latest"
+    docker:
+      - image: cimg/android:2024.01   # Imagen con Android SDK + JDK
     working_directory: ~/project
     steps:
       - checkout
-      # Aquí agrega los comandos necesarios para preparar el entorno, por ejemplo:
+
+      # Configurar caché de Gradle
+      - restore_cache:
+          keys:
+            - gradle-cache-{{ checksum "build.gradle" }}
+            - gradle-cache-
+
+      # Asegurar permisos de Gradlew
       - run:
-          name: Install dependencies
-          command: ./gradlew androidDependencies
+          name: Grant Gradlew permissions
+          command: chmod +x ./gradlew
+
+      # Descargar dependencias
+      - run:
+          name: Download dependencies
+          command: ./gradlew dependencies
+
+      - save_cache:
+          paths:
+            - ~/.gradle
+          key: gradle-cache-{{ checksum "build.gradle" }}
+
+      # Compilar proyecto
       - run:
           name: Build Debug APK
           command: ./gradlew assembleDebug
+
+      # Ejecutar tests unitarios
+      - run:
+          name: Run Unit Tests
+          command: ./gradlew testDebugUnitTest
+
+      # Guardar artefactos (APK generado)
       - store_artifacts:
-          path: app/build/outputs/apk/debug
-          destination: apk
+          path: app/build/outputs/apk/debug/
+          destination: debug-apk
 
 workflows:
   build_and_test:
