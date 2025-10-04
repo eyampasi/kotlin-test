@@ -14,11 +14,8 @@ jobs:
       # Configurar caché de Gradle
       - restore_cache:
           keys:
-            - gradle-cache-{{ checksum "build.gradle" }}
-            - gradle-cache-{{ checksum "build.gradle.kts" }}
-            - gradle-cache-{{ checksum "app/build.gradle" }}
-            - gradle-cache-{{ checksum "app/build.gradle.kts" }}
-            - gradle-cache-
+            - gradle-cache-{{ checksum "build.gradle.kts" }}-{{ checksum "app/build.gradle.kts" }}
+            - gradle-cache-  # Fallback para restaurar caché previo si no coincide
 
       # Asegurar permisos de Gradlew
       - run:
